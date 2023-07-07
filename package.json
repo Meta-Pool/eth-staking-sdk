@@ -1,0 +1,28 @@
+{
+  "name": "metapool-eth-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx tsc && node dist/index.js"
+  },
+  "keywords": [
+    "ETH",
+    "mpETH",
+    "meta",
+    "pool",
+    "liquid",
+    "staking",
+    "metapool"
+  ],
+  "author": "calficer1001",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ethers": "^6.6.0"
+  }
+}
