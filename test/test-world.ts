@@ -1,4 +1,4 @@
-import { ENV, getEnv } from "../env"
+import { getEnv } from "./env"
 
 export interface EthConfig {
     network: string
@@ -25,10 +25,7 @@ const GOERLI_CONFIG: EthConfig = {
 }
 
 export function getConfig(network?: string): EthConfig {
-    if(!network) {
-        const env: ENV = getEnv()
-        network = env.NETWORK
-    }
+    if(!network) network = getEnv().NETWORK
     switch(network) {
         case 'mainnet':
             return MAINNET_CONFIG

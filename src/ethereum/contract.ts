@@ -1,39 +1,33 @@
-import { Contract, Provider, ethers } from "ethers";
+import { Contract, Provider, Wallet, ethers } from "ethers"
 import stakingAbi from "./abi/Staking.json"
 import liquidityAbi from "./abi/LiquidUnstakePool.json"
 import withdrawAbi from "./abi/Withdraw.json"
-import { getEnv } from "../env";
 
 const abis = [
     stakingAbi.abi,
     liquidityAbi.abi,
-    withdrawAbi.abi
+    withdrawAbi.abi,
 ]
 
 export abstract class GenericContract {
 
     address: string
     abi: ethers.InterfaceAbi
-    network: string
+    wallet: Wallet
     contract: Contract
 
-    constructor(address: string, abi: ethers.InterfaceAbi, pk: string, network: string = "goerli") {
+    constructor(address: string, abi: ethers.InterfaceAbi, wallet: Wallet) {
         this.address = address
         this.abi = abi
-        this.network = network
-        const wallet = this.getWallet(pk)
+        this.wallet = wallet
         this.contract = new Contract(this.address, this.abi, wallet)
     }
 
     abstract getProvider(network: string, apiKey: string): Provider;
     
-    getWalletBalance(address: string) {
-        return this.getProvider(this.network, getEnv().PROVIDER_API_KEY).getBalance(address)
-    }
-    
-    getWallet(privateKey: string) {
-        const provider = this.getProvider(this.network, getEnv().PROVIDER_API_KEY)
-        return new ethers.Wallet(privateKey, provider)
+    getWalletBalance(address: string): Promise<bigint> {
+        if(!this.wallet.provider) throw new Error("No provider in wallet")
+        return this.wallet.provider.getBalance(address)
     }
 
     decodeError(err: any): any {

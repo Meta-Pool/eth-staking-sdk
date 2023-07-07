@@ -1,5 +1,5 @@
+import { Wallet } from "ethers"
 import withdrawAbi from "./abi/Withdraw.json"
-import { getConfig } from "./config"
 import { EthContract } from "./ethContracts"
 
 export interface WithdrawRequest {
@@ -9,8 +9,8 @@ export interface WithdrawRequest {
 
 export class WithdrawContract extends EthContract {
 
-    constructor() {
-        super(getConfig().withdrawContractAddress, withdrawAbi.abi)
+    constructor(wallet: Wallet, withdrawContractAddress: string) {
+        super(withdrawContractAddress, withdrawAbi.abi, wallet)
     }
 
     getEpoch(): Promise<number> {

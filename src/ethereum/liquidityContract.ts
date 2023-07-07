@@ -1,12 +1,11 @@
+import { Wallet } from "ethers"
 import liquidityAbi from "./abi/LiquidUnstakePool.json"
-import { EthConfig, getConfig } from "./config"
 import { EthContract } from "./ethContracts"
 
 export class LiquidityContract extends EthContract {
 
-    constructor() {
-        const config: EthConfig = getConfig()
-        super(config.liquidityContractAddress, liquidityAbi.abi)
+    constructor(wallet: Wallet, liquidityContractAddress: string) {
+        super(liquidityContractAddress, liquidityAbi.abi, wallet)
     }
 
     totalSupply(): Promise<bigint> {
@@ -21,7 +20,12 @@ export class LiquidityContract extends EthContract {
         return this.contract.getAvailableEthForValidator().catch(this.decodeError)
     }
 
-    getAmountOut(mpWeiIn: bigint): Promise<bigint> {
+    /**
+     * 
+     * @param mpWeiIn 
+     * @returns An array containing the values minExpectedWei and the fee
+     */
+    getAmountOut(mpWeiIn: bigint): Promise<[bigint, bigint]> {
         return this.contract.getAmountOut(mpWeiIn.toString())
     }
 
@@ -46,6 +50,6 @@ export class LiquidityContract extends EthContract {
     }
 
     swapmpETHforETH(mpWei: bigint, minMpWeiOut: bigint): Promise<any> {
-        return this.contract.redeem(mpWei.toString(), minMpWeiOut.toString())
+        return this.contract.swapmpETHforETH(mpWei.toString(), minMpWeiOut.toString())
     }
 }

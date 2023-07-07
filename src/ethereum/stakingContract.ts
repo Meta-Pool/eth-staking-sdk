@@ -1,11 +1,15 @@
+import { Wallet } from "ethers"
 import stakingAbi from "./abi/Staking.json"
-import { getConfig } from "./config"
 import { EthContract } from "./ethContracts"
 
 export class StakingContract extends EthContract {
 
-    constructor() {
-        super(getConfig().stakingContractAddress, stakingAbi.abi)
+    constructor(wallet: Wallet, stakingContractAddress: string) {
+        super(stakingContractAddress, stakingAbi.abi, wallet)
+    }
+
+    increaseAllowance(spenderAddress: string, amountMpWei: bigint): Promise<any> {
+        return this.contract.increaseAllowance(spenderAddress, amountMpWei)
     }
 
     balanceOf(address: string): Promise<bigint> {
@@ -52,6 +56,10 @@ export class StakingContract extends EthContract {
      */
     redeem(mpWei: bigint, address: string): Promise<any> {
         return this.contract.redeem(mpWei, address, address)
+    }
+
+    previewRedeem(mpWei: bigint): Promise<any> {
+        return this.contract.previewRedeem(mpWei)
     }
 }
 
